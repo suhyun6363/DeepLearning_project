@@ -9,9 +9,21 @@ import pickle
 mnist = keras.datasets.mnist
 (x_train, t_train), (x_test, t_test) = mnist.load_data()
 
+# Sunbae dataset 
+with open('SunbaeTestData.pkl', 'rb') as f:
+    dataset_load = pickle.load(f)
+(x_sb_test, t_sb_test) = dataset_load
+
+with open('SunbaeTrainData.pkl', 'rb') as f:
+    dataset_load = pickle.load(f)
+(x_sb_train, t_sb_train) = dataset_load
+# one-hot-label
+t_sb_train = np.argmax(t_sb_train, axis=1)
+t_sb_test = np.argmax(t_sb_test, axis=1)
+
 # 추가할 dataset의 경로
 # 본인의 경로에 맞게 변경해주세요.
-own_dataset_path = 'C:\\Users\\UNA\\deep-learning-from-scratch-master\\deep_learning_project\\team_aug'
+own_dataset_path = 'C:/Users/UNA/dataset/team_aug3'
 
 # dataset folders 회전
 own_images = []
@@ -34,10 +46,15 @@ own_labels = np.array(own_labels)
 #먼저 mlp에서 사용하는 2D shpae으로 진행하고 cnn에서 사용하는 3D shape은 마지막에 처리하고 다른 이름으로 저장
 own_images = np.squeeze(own_images, axis=3)
 
+# concatenate with sunbae dataset
+own_images = np.concatenate((own_images, x_sb_train, x_sb_test), axis=0)
+own_labels = np.concatenate((own_labels, t_sb_train, t_sb_test), axis=0)
+
 #6:1 비율로 나누기
-rate_into_indexing = int(own_images.shape(0) / 7) * 6
+#rate_into_indexing = int(own_images.shape(0) / 7) * 6
+rate_into_indexing = 2439
 x_kr_train = own_images[:rate_into_indexing]
-t_kr_train = own_images[:rate_into_indexing] 
+t_kr_train = own_labels[:rate_into_indexing] 
 x_kr_test = own_images[rate_into_indexing:]
 t_kr_test = own_labels[rate_into_indexing:]
 
